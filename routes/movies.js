@@ -5,7 +5,15 @@ const Celebrity = require('../models/Celebrity.model')
 const Movie = require('../models/Movie.model')
 
 router.get('/all-movies', (req, res, next) => {
-    res.render('movies/movies.hbs')
+    
+    Movie.find()
+        .then((movies) => {
+
+            res.render('movies/movies.hbs', { movies })
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 })
 
 router.get('/add-movie', (req, res, next) => {
@@ -18,6 +26,25 @@ router.get('/add-movie', (req, res, next) => {
         .catch((err) => {
             console.log(err)
         })
+})
+
+router.post('/add-movie', (req, res, next) => {
+
+    let { title, genre, plot, cast } = req.body
+
+    Movie.create({
+        title,
+        genre,
+        plot,
+        cast
+    })
+    .then((createdMovie) => {
+        console.log("Created movie", createdMovie)
+        res.redirect('/movies/all-movies')
+    })
+    .catch((err) => {
+        console.log(err)
+    })
 
 })
 
